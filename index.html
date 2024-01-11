@@ -58,11 +58,11 @@
                     var cardBody = $('<div class="accordion-body"></div>');
                     var worksAccordion = $('<div class="accordion" id="worksAccordion' + teamId + '"></div>');
 
-                    $.each(team.data.works, function (title, work) {
-                        var workId = teamId + '-work-' + title.replace(/\s+/g, '-');
+                    $.each(team.data.works, function (index, work) {
+                        var workId = teamId + '-work-' + work.title.replace(/\s+/g, '-');
                         var workItem = $('<div class="accordion-item"></div>');
                         var workHeader = $('<h2 class="accordion-header" id="heading' + workId + '"></h2>');
-                        var workButton = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + workId + '" aria-expanded="false" aria-controls="collapse' + workId + '"></button>').text(work.title+ ' (評価: ' + work.rating.raw + ')');
+                        var workButton = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + workId + '" aria-expanded="false" aria-controls="collapse' + workId + '"></button>').text(work.title + ' (評価: ' + work.rating.raw + ')');
                         var workCollapse = $('<div id="collapse' + workId + '" class="accordion-collapse collapse" aria-labelledby="heading' + workId + '" data-bs-parent="#worksAccordion' + teamId + '"></div>');
                         var workCardBody = $('<div class="accordion-body"></div>').html('<strong>作成者:</strong> ' + work.created_by + '<br><strong>スコア:</strong> ' + work.rating.raw + ' (内訳: +' + work.rating.uv + ', -' + work.rating.dv + ')');
 
