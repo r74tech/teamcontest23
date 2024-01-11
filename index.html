@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チームコンテスト2023 - チーム別著作一覧</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">チームコンテスト2023 - チーム別著作一覧</h1>
+        <div id="team-data" class="accordion"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var dataUrl = "https://script.google.com/macros/s/AKfycby-oiEGKikXuahpeWPLx55ldupgI7Z0OiRPcIbZZ0Y2rSgyagctNMV8CO4B-jS9CdxbVQ/exec";
+
+            function fetchData() {
+                $.ajax({
+                    url: dataUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        displayData(data);
+                    },
+                    error: function () {
+                        alert('データの取得に失敗しました。');
+                    }
+                });
+            }
+
+            function displayData(data) {
+                var teamDataContainer = $('#team-data');
+                teamDataContainer.empty();
+
+                var teams = Object.keys(data.assigned).map(function (key) {
+                    return { name: key, data: data.assigned[key] };
+                });
+
+                teams.sort(function (a, b) {
+                    return b.data.rawScore - a.data.rawScore;
+                });
+
+                teams.forEach(function (team, teamIndex) {
+                    var teamId = 'team-' + teamIndex;
+                    var teamDiv = $('<div class="accordion-item"></div>');
+                    var header = $('<h2 class="accordion-header" id="heading' + teamId + '"></h2>');
+                    var button = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + teamId + '" aria-expanded="true" aria-controls="collapse' + teamId + '"></button>').text(team.name + ' (スコア: ' + team.data.rawScore + ')');
+                    header.append(button);
+
+                    var collapseDiv = $('<div id="collapse' + teamId + '" class="accordion-collapse collapse" aria-labelledby="heading' + teamId + '" data-bs-parent="#team-data"></div>');
+                    var cardBody = $('<div class="accordion-body"></div>');
+                    var worksAccordion = $('<div class="accordion" id="worksAccordion' + teamId + '"></div>');
+
+                    $.each(team.data.works, function (title, work) {
+                        var workId = teamId + '-work-' + title.replace(/\s+/g, '-');
+                        var workItem = $('<div class="accordion-item"></div>');
+                        var workHeader = $('<h2 class="accordion-header" id="heading' + workId + '"></h2>');
+                        var workButton = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + workId + '" aria-expanded="false" aria-controls="collapse' + workId + '"></button>').text(work.title);
+                        var workCollapse = $('<div id="collapse' + workId + '" class="accordion-collapse collapse" aria-labelledby="heading' + workId + '" data-bs-parent="#worksAccordion' + teamId + '"></div>');
+                        var workCardBody = $('<div class="accordion-body"></div>').html('<strong>作成者:</strong> ' + work.created_by + '<br><strong>スコア:</strong> ' + work.rating.raw + ' (内訳: +' + work.rating.uv + ', -' + work.rating.dv+ ')');
+
+                        workHeader.append(workButton);
+                        workCollapse.append(workCardBody);
+                        workItem.append(workHeader).append(workCollapse);
+                        worksAccordion.append(workItem);
+                    });
+
+                    cardBody.append(worksAccordion);
+                    collapseDiv.append(cardBody);
+                    teamDiv.append(header).append(collapseDiv);
+                    teamDataContainer.append(teamDiv);
+                });
+            }
+
+            fetchData();
+        });
+    </script>
+</body>
+
+</html>
