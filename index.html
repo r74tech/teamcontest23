@@ -19,7 +19,7 @@
 
     <script>
         $(document).ready(function () {
-            var dataUrl = "https://script.google.com/macros/s/AKfycbyxhmIfB6cJCayCAi9PnAnMOTD2-StBUq8xdGpiXYmzv5nncxi6tVI6RD3S8wmG-ZQJFg/exec";
+            var dataUrl = "https://script.google.com/macros/s/AKfycbyB-cN5_CyhvvoqfoxVIF8ZGP28ogemkOvTqxrJhhnYfu0fEHfG1b-dBCNmzC8UrWskGg/exec";
 
             function fetchData() {
                 $.ajax({
@@ -51,7 +51,8 @@
                     var teamId = 'team-' + teamIndex;
                     var teamDiv = $('<div class="accordion-item"></div>');
                     var header = $('<h2 class="accordion-header" id="heading' + teamId + '"></h2>');
-                    var button = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + teamId + '" aria-expanded="true" aria-controls="collapse' + teamId + '"></button>').text(team.name + ' (合計評価: ' + team.data.rawScore + ')');
+                    var button = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + teamId + '" aria-expanded="true" aria-controls="collapse' + teamId + '"></button>')
+                        .text(team.name + ' - テーマ: ' + team.data.theme + ' (合計評価: ' + team.data.rawScore + ')');
                     header.append(button);
 
                     var collapseDiv = $('<div id="collapse' + teamId + '" class="accordion-collapse collapse" aria-labelledby="heading' + teamId + '" data-bs-parent="#team-data"></div>');
@@ -62,9 +63,11 @@
                         var workId = teamId + '-work-' + work.title.replace(/\s+/g, '-');
                         var workItem = $('<div class="accordion-item"></div>');
                         var workHeader = $('<h2 class="accordion-header" id="heading' + workId + '"></h2>');
-                        var workButton = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + workId + '" aria-expanded="false" aria-controls="collapse' + workId + '"></button>').text(work.title + ' (評価: ' + work.rating.raw + ')');
+                        var workButton = $('<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + workId + '" aria-expanded="false" aria-controls="collapse' + workId + '"></button>')
+                            .text(work.title + ' (評価: ' + work.rating.raw + ')');
                         var workCollapse = $('<div id="collapse' + workId + '" class="accordion-collapse collapse" aria-labelledby="heading' + workId + '" data-bs-parent="#worksAccordion' + teamId + '"></div>');
-                        var workCardBody = $('<div class="accordion-body"></div>').html('<strong>作成者:</strong> ' + work.created_by + '<br><strong>スコア:</strong> ' + work.rating.raw + ' (内訳: +' + work.rating.uv + ', -' + work.rating.dv + ')');
+                        var workCardBody = $('<div class="accordion-body"></div>')
+                            .html('<strong>作成者:</strong> ' + work.created_by + '<br><strong>スコア:</strong> ' + work.rating.raw + ' (内訳: +' + work.rating.uv + ', -' + work.rating.dv + ')');
 
                         workHeader.append(workButton);
                         workCollapse.append(workCardBody);
